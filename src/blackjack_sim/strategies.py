@@ -76,14 +76,20 @@ class BasicStrategy(Strategy):
         allowed: frozenset[Action],
     ) -> Action:
         del rules
-        if Action.SPLIT in allowed and self._should_split(hand.cards[0], dealer_upcard):
+        if (
+            hand.can_split
+            and Action.SPLIT in allowed
+            and self._should_split(hand.cards[0], dealer_upcard)
+        ):
             return Action.SPLIT
 
         preferred = self._non_split_action(hand, dealer_upcard)
         if preferred in allowed:
             return preferred
         if preferred is Action.DOUBLE:
-            return Action.STAND if hand.total >= 17 else Action.HIT
+            fallback = Action.STAND if hand.total >= 17 else Action.HIT
+            if fallback in allowed:
+                return fallback
         return Action.STAND
 
     @staticmethod

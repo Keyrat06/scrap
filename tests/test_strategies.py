@@ -37,6 +37,12 @@ class BasicStrategyTests(unittest.TestCase):
         action = self.strategy.decide(Hand([5, 6]), 6, self.rules, allowed)
         self.assertEqual(action, Action.HIT)
 
+    def test_split_ace_restriction_overrides_double_fallback(self) -> None:
+        allowed = frozenset({Action.STAND})
+        hand = Hand([1, 5], from_split=True, split_aces=True)
+        action = self.strategy.decide(hand, 6, self.rules, allowed)
+        self.assertEqual(action, Action.STAND)
+
 
 if __name__ == "__main__":
     unittest.main()
