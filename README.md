@@ -58,6 +58,9 @@ PYTHONPATH=src python -m unittest discover -s tests -v
 The simulation is seeded. Repeating an experiment with the same version, rules,
 strategy, round count, and seed produces the same result.
 
+See [the validation notes](docs/validation.md) for test coverage and the reproducible
+one-million-round basic-strategy baseline.
+
 ## Roadmap
 
 - Add Hi-Lo running and true counts
