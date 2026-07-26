@@ -36,6 +36,8 @@ class SimulationResult:
     ruined: bool
     ci95_low_per_100_rounds: float
     ci95_high_per_100_rounds: float
+    ci95_low_per_100_hands: float
+    ci95_high_per_100_hands: float
 
     def to_dict(self) -> dict[str, str | int | float]:
         return asdict(self)
@@ -112,6 +114,7 @@ def simulate(
     )
     stddev = math.sqrt(variance)
     margin_per_round = 1.96 * stddev / math.sqrt(played_rounds)
+    per_100_hand_scale = 100 * played_rounds / hands
 
     return SimulationResult(
         strategy=f"{strategy.info.name} + {policy.info.name}",
@@ -136,6 +139,8 @@ def simulate(
         ruined=bankroll < base_wager,
         ci95_low_per_100_rounds=100 * (mean - margin_per_round),
         ci95_high_per_100_rounds=100 * (mean + margin_per_round),
+        ci95_low_per_100_hands=per_100_hand_scale * (mean - margin_per_round),
+        ci95_high_per_100_hands=per_100_hand_scale * (mean + margin_per_round),
     )
 
 

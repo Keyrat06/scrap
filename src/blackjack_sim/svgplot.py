@@ -20,7 +20,15 @@ def write_complexity_profitability_scatter(
     plot_width = width - left - right
     plot_height = height - top - bottom
     x_values = [result.complexity for result in results]
-    y_values = [result.profit_per_100_hands for result in results]
+    y_values = [
+        value
+        for result in results
+        for value in (
+            result.profit_per_100_hands,
+            result.ci95_low_per_100_hands,
+            result.ci95_high_per_100_hands,
+        )
+    ]
     x_min, x_max = min(x_values), max(x_values)
     y_min, y_max = min(y_values), max(y_values)
     y_min = min(y_min, 0.0)
@@ -44,7 +52,8 @@ def write_complexity_profitability_scatter(
         f'viewBox="0 0 {width} {height}">',
         "<style>text{font-family:system-ui,sans-serif;fill:#222}"
         ".grid{stroke:#ddd;stroke-width:1}.axis{stroke:#333;stroke-width:2}"
-        ".positive{fill:#198754}.negative{fill:#c0392b}</style>",
+        ".positive{fill:#198754}.negative{fill:#c0392b}"
+        ".error{stroke:#555;stroke-width:1.5}</style>",
         f'<text x="{width / 2}" y="25" text-anchor="middle" font-size="18">'
         "Strategy complexity vs. profitability</text>",
     ]
@@ -73,9 +82,17 @@ def write_complexity_profitability_scatter(
     for result in ordered:
         x = x_position(result.complexity)
         y = y_position(result.profit_per_100_hands)
+        low_y = y_position(result.ci95_low_per_100_hands)
+        high_y = y_position(result.ci95_high_per_100_hands)
         point_class = "positive" if result.profit_per_100_hands >= 0 else "negative"
         elements.extend(
             [
+                f'<line class="error" x1="{x:.2f}" y1="{high_y:.2f}" '
+                f'x2="{x:.2f}" y2="{low_y:.2f}"/>',
+                f'<line class="error" x1="{x-4:.2f}" y1="{high_y:.2f}" '
+                f'x2="{x+4:.2f}" y2="{high_y:.2f}"/>',
+                f'<line class="error" x1="{x-4:.2f}" y1="{low_y:.2f}" '
+                f'x2="{x+4:.2f}" y2="{low_y:.2f}"/>',
                 f'<circle class="{point_class}" cx="{x:.2f}" cy="{y:.2f}" r="6"/>',
                 f'<text x="{x:.2f}" y="{height-bottom+20}" text-anchor="middle" '
                 f'font-size="12">{result.complexity:g}</text>',
@@ -102,7 +119,15 @@ def write_betting_profitability_bars(
     left, right, top, bottom = 90, 30, 45, 105
     plot_width = width - left - right
     plot_height = height - top - bottom
-    y_values = [result.profit_per_100_hands for result in results]
+    y_values = [
+        value
+        for result in results
+        for value in (
+            result.profit_per_100_hands,
+            result.ci95_low_per_100_hands,
+            result.ci95_high_per_100_hands,
+        )
+    ]
     y_min, y_max = min(min(y_values), 0.0), max(max(y_values), 0.0)
     if y_min == y_max:
         y_min, y_max = y_min - 1, y_max + 1
@@ -118,7 +143,8 @@ def write_betting_profitability_bars(
         f'viewBox="0 0 {width} {height}">',
         "<style>text{font-family:system-ui,sans-serif;fill:#222}"
         ".grid{stroke:#ddd;stroke-width:1}.axis{stroke:#333;stroke-width:2}"
-        ".positive{fill:#198754}.negative{fill:#c0392b}</style>",
+        ".positive{fill:#198754}.negative{fill:#c0392b}"
+        ".error{stroke:#555;stroke-width:1.5}</style>",
         f'<text x="{width/2}" y="25" text-anchor="middle" font-size="18">'
         "Profitability by betting policy</text>",
     ]
@@ -151,6 +177,8 @@ def write_betting_profitability_bars(
     for index, result in enumerate(results):
         center = left + slot_width * (index + 0.5)
         value_y = y_position(result.profit_per_100_hands)
+        low_y = y_position(result.ci95_low_per_100_hands)
+        high_y = y_position(result.ci95_high_per_100_hands)
         bar_y = min(zero_y, value_y)
         bar_height = max(1.0, abs(value_y - zero_y))
         bar_class = "positive" if result.profit_per_100_hands >= 0 else "negative"
@@ -158,6 +186,12 @@ def write_betting_profitability_bars(
             [
                 f'<rect class="{bar_class}" x="{center-bar_width/2:.2f}" '
                 f'y="{bar_y:.2f}" width="{bar_width:.2f}" height="{bar_height:.2f}"/>',
+                f'<line class="error" x1="{center:.2f}" y1="{high_y:.2f}" '
+                f'x2="{center:.2f}" y2="{low_y:.2f}"/>',
+                f'<line class="error" x1="{center-4:.2f}" y1="{high_y:.2f}" '
+                f'x2="{center+4:.2f}" y2="{high_y:.2f}"/>',
+                f'<line class="error" x1="{center-4:.2f}" y1="{low_y:.2f}" '
+                f'x2="{center+4:.2f}" y2="{low_y:.2f}"/>',
                 f'<text x="{center:.2f}" y="{value_y-7 if result.profit_per_100_hands >= 0 else value_y+17:.2f}" '
                 f'text-anchor="middle" font-size="12">{result.profit_per_100_hands:.2f}</text>',
                 f'<text x="{center:.2f}" y="{height-bottom+20}" text-anchor="end" '
