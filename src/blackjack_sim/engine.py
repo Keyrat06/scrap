@@ -14,6 +14,7 @@ class RoundResult:
     net: float
     wagered: float
     hands: int
+    observed_cards: tuple[int, ...]
 
 
 class BlackjackEngine:
@@ -21,25 +22,45 @@ class BlackjackEngine:
         self.rules = rules
         self.shoe = shoe
 
+    def prepare_round(self) -> bool:
+        """Shuffle if the cut card was reached; return whether a shuffle occurred."""
+        if self.shoe.needs_shuffle:
+            self.shoe.shuffle()
+            return True
+        return False
+
     def play_round(self, strategy: Strategy, base_wager: float = 1.0) -> RoundResult:
         if base_wager <= 0:
             raise ValueError("base wager must be positive")
-        if self.shoe.needs_shuffle:
-            self.shoe.shuffle()
+        self.prepare_round()
 
-        player = Hand([self.shoe.deal()], wager=base_wager)
-        dealer = Hand([self.shoe.deal()])
-        player.cards.append(self.shoe.deal())
+        observed: list[int] = []
+
+        def deal_visible() -> int:
+            card = self.shoe.deal()
+            observed.append(card)
+            return card
+
+        player = Hand([deal_visible()], wager=base_wager)
+        dealer = Hand([deal_visible()])
+        player.cards.append(deal_visible())
         dealer.cards.append(self.shoe.deal())
 
         if player.is_blackjack or dealer.is_blackjack:
+            if dealer.is_blackjack:
+                observed.append(dealer.cards[1])
             if player.is_blackjack and dealer.is_blackjack:
                 net = 0.0
             elif player.is_blackjack:
                 net = base_wager * self.rules.blackjack_payout
             else:
                 net = -base_wager
-            return RoundResult(net=net, wagered=base_wager, hands=1)
+            return RoundResult(
+                net=net,
+                wagered=base_wager,
+                hands=1,
+                observed_cards=tuple(observed),
+            )
 
         hands = [player]
         wagered = base_wager
@@ -59,25 +80,25 @@ class BlackjackEngine:
                 if action is Action.STAND:
                     break
                 if action is Action.HIT:
-                    hand.cards.append(self.shoe.deal())
+                    hand.cards.append(deal_visible())
                     continue
                 if action is Action.DOUBLE:
                     wagered += hand.wager
                     hand.wager *= 2
                     hand.doubled = True
-                    hand.cards.append(self.shoe.deal())
+                    hand.cards.append(deal_visible())
                     break
 
                 wagered += hand.wager
                 split_rank = hand.cards[0]
                 first = Hand(
-                    [split_rank, self.shoe.deal()],
+                    [split_rank, deal_visible()],
                     wager=hand.wager,
                     from_split=True,
                     split_aces=split_rank == 1,
                 )
                 second = Hand(
-                    [split_rank, self.shoe.deal()],
+                    [split_rank, deal_visible()],
                     wager=hand.wager,
                     from_split=True,
                     split_aces=split_rank == 1,
@@ -88,10 +109,16 @@ class BlackjackEngine:
             index += 1
 
         if any(not hand.is_bust for hand in hands):
-            self._play_dealer(dealer)
+            observed.append(dealer.cards[1])
+            self._play_dealer(dealer, observed)
 
         net = sum(self._settle(hand, dealer) for hand in hands)
-        return RoundResult(net=net, wagered=wagered, hands=len(hands))
+        return RoundResult(
+            net=net,
+            wagered=wagered,
+            hands=len(hands),
+            observed_cards=tuple(observed),
+        )
 
     def _allowed_actions(self, hand: Hand, hand_count: int) -> set[Action]:
         allowed = {Action.STAND}
@@ -110,11 +137,13 @@ class BlackjackEngine:
                 allowed.add(Action.DOUBLE)
         return allowed
 
-    def _play_dealer(self, dealer: Hand) -> None:
+    def _play_dealer(self, dealer: Hand, observed: list[int]) -> None:
         while dealer.total < 17 or (
             dealer.total == 17 and dealer.is_soft and self.rules.dealer_hits_soft_17
         ):
-            dealer.cards.append(self.shoe.deal())
+            card = self.shoe.deal()
+            dealer.cards.append(card)
+            observed.append(card)
 
     @staticmethod
     def _settle(player: Hand, dealer: Hand) -> float:
