@@ -3,16 +3,15 @@
 A reproducible Monte Carlo simulator for comparing blackjack strategies by payout,
 risk, and operational complexity.
 
-The first milestone establishes a rules-driven engine and three non-counting baselines:
+The simulator currently includes three playing baselines:
 
 1. Random legal play
 2. Dealer-mimic play (hit below 17)
 3. Multi-deck basic strategy
 
-Card-counting systems, bet spreads, index deviations, bankroll analysis, and a
-multi-dimensional complexity model are the next milestones. Keeping the playing
-strategy separate from the betting policy will prevent aggressive wagers from being
-mistaken for a better counting system.
+It independently compares flat betting, Martingale, Paroli, a Hi-Lo true-count spread,
+and an approximate Hi-Lo half-Kelly policy. Keeping playing strategy separate from
+betting prevents aggressive wagers from being mistaken for better play.
 
 ## Quick start
 
@@ -21,8 +20,10 @@ dependencies.
 
 ```bash
 python -m pip install -e .
-blackjack-sim --rounds 100000 --csv results/baselines.csv \
-  --plot results/payout-vs-complexity.svg
+blackjack-sim --strategy basic --betting all --rounds 100000 \
+  --csv results/betting.csv \
+  --scatter results/complexity-vs-profitability.svg \
+  --bar-plot results/betting-profitability.svg
 ```
 
 Without installation:
@@ -31,8 +32,8 @@ Without installation:
 PYTHONPATH=src python -m blackjack_sim --rounds 100000
 ```
 
-Every command prints a JSON summary. The optional CSV contains one row per strategy,
-and the SVG plot requires no visualization package.
+Every command prints a JSON summary. Optional CSV and SVG outputs require no
+visualization package.
 
 ## Default model
 
@@ -43,11 +44,16 @@ and the SVG plot requires no visualization package.
 - Double after split
 - Up to four split hands
 - No surrender or insurance
-- Flat one-unit wager
+- Basic playing strategy
+- All betting policies, with a 1-12 unit table spread
+- 1,000-unit starting bankroll
 
-Rules can be changed through command-line flags. Results report net units per 100
-resolved player hands, return as a percentage of all money wagered, round-level
-standard deviation, and a 95% confidence interval for units per 100 rounds.
+Rules and bankroll limits can be changed through command-line flags. Results report
+net units per 100 resolved player hands, return on money wagered, bankroll return,
+round-level standard deviation, maximum drawdown, ruin, and 95% confidence intervals.
+
+See the [betting strategy comparison](docs/betting-strategies.md) for reproducible
+two-million-round results and generated plots.
 
 ## Development
 
@@ -63,12 +69,10 @@ one-million-round basic-strategy baseline.
 
 ## Roadmap
 
-- Add Hi-Lo running and true counts
-- Introduce independent flat, spread, Kelly, and capped betting policies
 - Add Illustrious 18 and Fab 4 playing deviations
 - Compare KO, Omega II, and Wong Halves
 - Model Wonging and table limits
-- Calculate drawdown, risk of ruin, and bankroll growth
+- Add replicated experiments and formal risk-of-ruin estimates
 - Replace the initial scalar complexity placeholder with documented memory,
   arithmetic, decision, and operational dimensions
 - Add exact-composition play as a theoretical upper-bound benchmark
