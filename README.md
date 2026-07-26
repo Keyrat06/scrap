@@ -55,6 +55,12 @@ round-level standard deviation, maximum drawdown, ruin, and 95% confidence inter
 See the [betting strategy comparison](docs/betting-strategies.md) for reproducible
 two-million-round results and generated plots.
 
+## Benchmark plots
+
+![Profitability by betting policy](docs/generated/betting-profitability.png)
+
+![Complexity versus profitability](docs/generated/complexity-vs-profitability.png)
+
 ## Development
 
 ```bash

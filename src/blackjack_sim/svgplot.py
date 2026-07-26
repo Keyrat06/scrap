@@ -79,12 +79,15 @@ def write_complexity_profitability_scatter(
     )
 
     ordered = sorted(results, key=lambda result: result.complexity)
-    for result in ordered:
+    for index, result in enumerate(ordered):
         x = x_position(result.complexity)
         y = y_position(result.profit_per_100_hands)
         low_y = y_position(result.ci95_low_per_100_hands)
         high_y = y_position(result.ci95_high_per_100_hands)
         point_class = "positive" if result.profit_per_100_hands >= 0 else "negative"
+        label_x = x - 7 if x > width - right - 140 else x + 7
+        label_anchor = "end" if label_x < x else "start"
+        label_y = y - 8 if index % 2 == 0 else y + 18
         elements.extend(
             [
                 f'<line class="error" x1="{x:.2f}" y1="{high_y:.2f}" '
@@ -96,7 +99,8 @@ def write_complexity_profitability_scatter(
                 f'<circle class="{point_class}" cx="{x:.2f}" cy="{y:.2f}" r="6"/>',
                 f'<text x="{x:.2f}" y="{height-bottom+20}" text-anchor="middle" '
                 f'font-size="12">{result.complexity:g}</text>',
-                f'<text x="{x+7:.2f}" y="{y-8:.2f}" font-size="12">'
+                f'<text x="{label_x:.2f}" y="{label_y:.2f}" '
+                f'text-anchor="{label_anchor}" font-size="12">'
                 f"{escape(result.betting_strategy)} "
                 f"({result.profit_per_100_hands:.2f})</text>",
             ]
