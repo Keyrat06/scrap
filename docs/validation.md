@@ -11,8 +11,11 @@ The initial test suite covers:
 - Rule validation
 - Representative pair, hard-total, and soft-total basic-strategy decisions
 - Legal fallbacks when doubling or hitting is unavailable
+- Hi-Lo balance, reset, and true-count conversion
+- Flat, progression, spread, and bankroll-proportional betting decisions
+- Visible-card reporting, including hidden dealer hole-card behavior
 - Seeded simulation reproducibility
-- SVG artifact generation
+- Profitability bar and complexity scatter artifact generation
 
 CI runs the suite and a 1,000-round CLI smoke experiment on every supported Python
 version.
@@ -36,5 +39,9 @@ At the foundation revision it produced:
 
 This is consistent with the expected small house advantage for the modeled six-deck
 S17 game. It is a regression reference, not proof that every ruleset or strategy is
-correct. Counting implementations will require additional tests for observed-card
-updates, running-count conservation, true-count conversion, and bet timing.
+correct.
+
+The [betting comparison](betting-strategies.md) uses two million rounds on one common
+seeded shoe sequence. Its confidence intervals quantify Monte Carlo uncertainty, but
+future replicated experiments should also test sensitivity to seeds, penetration,
+table limits, and bankroll size.

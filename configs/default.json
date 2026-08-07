@@ -12,7 +12,16 @@
   "experiment": {
     "rounds": 100000,
     "seed": 20260715,
-    "base_wager": 1.0,
-    "strategies": ["random", "dealer-mimic", "basic"]
+    "initial_bankroll": 1000.0,
+    "min_bet": 1.0,
+    "max_bet": 12.0,
+    "playing_strategies": ["basic"],
+    "betting_policies": [
+      "flat",
+      "martingale",
+      "paroli",
+      "hi-lo-spread",
+      "hi-lo-half-kelly"
+    ]
   }
 }

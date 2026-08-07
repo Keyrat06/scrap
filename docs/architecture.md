@@ -14,9 +14,9 @@ strategy it is evaluating.
 Strategy metadata includes a temporary scalar complexity score so that the reporting
 path can be exercised before the full complexity rubric is implemented.
 
-Counting systems will be stateful observers of every exposed card. They will provide
-running and true-count information without owning wager selection. Betting policies
-will consume count information independently.
+`betting.py` contains stateful wager policies and a Hi-Lo observer. The engine reports
+only cards exposed to the player; the counter resets at shuffle boundaries and
+provides running and true-count information without owning wager selection.
 
 ## Simulation
 
@@ -26,9 +26,9 @@ replications and paired shoe experiments where comparison semantics permit.
 
 ## Reporting
 
-The CLI emits machine-readable JSON and optional CSV. `svgplot.py` intentionally uses
-only the standard library so a baseline experiment can produce an artifact in a clean
-environment.
+The CLI emits machine-readable JSON and optional CSV. `svgplot.py` produces bar and
+complexity/profitability scatter plots with 95% confidence bars using only the
+standard library.
 
 ## Complexity model
 

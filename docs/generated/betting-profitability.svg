@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="500" viewBox="0 0 800 500">
+<style>text{font-family:system-ui,sans-serif;fill:#222}.grid{stroke:#ddd;stroke-width:1}.axis{stroke:#333;stroke-width:2}.positive{fill:#198754}.negative{fill:#c0392b}.error{stroke:#555;stroke-width:1.5}</style>
+<text x="400.0" y="25" text-anchor="middle" font-size="18">Profitability by betting policy</text>
+<line class="grid" x1="90" y1="395.00" x2="770" y2="395.00"/>
+<text x="80" y="399.00" text-anchor="end" font-size="12">-2.08</text>
+<line class="grid" x1="90" y1="325.00" x2="770" y2="325.00"/>
+<text x="80" y="329.00" text-anchor="end" font-size="12">-1.04</text>
+<line class="grid" x1="90" y1="255.00" x2="770" y2="255.00"/>
+<text x="80" y="259.00" text-anchor="end" font-size="12">0.01</text>
+<line class="grid" x1="90" y1="185.00" x2="770" y2="185.00"/>
+<text x="80" y="189.00" text-anchor="end" font-size="12">1.05</text>
+<line class="grid" x1="90" y1="115.00" x2="770" y2="115.00"/>
+<text x="80" y="119.00" text-anchor="end" font-size="12">2.09</text>
+<line class="grid" x1="90" y1="45.00" x2="770" y2="45.00"/>
+<text x="80" y="49.00" text-anchor="end" font-size="12">3.13</text>
+<line class="axis" x1="90" y1="45" x2="90" y2="395"/>
+<line class="axis" x1="90" y1="255.46" x2="770" y2="255.46"/>
+<text x="20" y="250.0" text-anchor="middle" transform="rotate(-90 20 250)">Profit per 100 hands (units)</text>
+<rect class="negative" x="118.00" y="255.46" width="80.00" height="30.14"/>
+<line class="error" x1="158.00" y1="275.13" x2="158.00" y2="296.06"/>
+<line class="error" x1="154.00" y1="275.13" x2="162.00" y2="275.13"/>
+<line class="error" x1="154.00" y1="296.06" x2="162.00" y2="296.06"/>
+<text x="158.00" y="302.59" text-anchor="middle" font-size="12">-0.45</text>
+<text x="158.00" y="415" text-anchor="end" font-size="12" transform="rotate(-25 158.00 415)">flat</text>
+<rect class="negative" x="254.00" y="255.46" width="80.00" height="60.28"/>
+<line class="error" x1="294.00" y1="270.35" x2="294.00" y2="361.13"/>
+<line class="error" x1="290.00" y1="270.35" x2="298.00" y2="270.35"/>
+<line class="error" x1="290.00" y1="361.13" x2="298.00" y2="361.13"/>
+<text x="294.00" y="332.74" text-anchor="middle" font-size="12">-0.90</text>
+<text x="294.00" y="415" text-anchor="end" font-size="12" transform="rotate(-25 294.00 415)">martingale</text>
+<rect class="negative" x="390.00" y="255.46" width="80.00" height="53.87"/>
+<line class="error" x1="430.00" y1="288.83" x2="430.00" y2="329.82"/>
+<line class="error" x1="426.00" y1="288.83" x2="434.00" y2="288.83"/>
+<line class="error" x1="426.00" y1="329.82" x2="434.00" y2="329.82"/>
+<text x="430.00" y="326.32" text-anchor="middle" font-size="12">-0.80</text>
+<text x="430.00" y="415" text-anchor="end" font-size="12" transform="rotate(-25 430.00 415)">paroli</text>
+<rect class="positive" x="526.00" y="215.84" width="80.00" height="39.62"/>
+<line class="error" x1="566.00" y1="190.26" x2="566.00" y2="241.42"/>
+<line class="error" x1="562.00" y1="190.26" x2="570.00" y2="190.26"/>
+<line class="error" x1="562.00" y1="241.42" x2="570.00" y2="241.42"/>
+<text x="566.00" y="208.84" text-anchor="middle" font-size="12">0.59</text>
+<text x="566.00" y="415" text-anchor="end" font-size="12" transform="rotate(-25 566.00 415)">hi-lo-spread</text>
+<rect class="positive" x="662.00" y="140.81" width="80.00" height="114.64"/>
+<line class="error" x1="702.00" y1="78.87" x2="702.00" y2="202.75"/>
+<line class="error" x1="698.00" y1="78.87" x2="706.00" y2="78.87"/>
+<line class="error" x1="698.00" y1="202.75" x2="706.00" y2="202.75"/>
+<text x="702.00" y="133.81" text-anchor="middle" font-size="12">1.71</text>
+<text x="702.00" y="415" text-anchor="end" font-size="12" transform="rotate(-25 702.00 415)">hi-lo-half-kelly</text>
+</svg>
