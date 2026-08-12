@@ -57,9 +57,18 @@ two-million-round results and generated plots.
 
 ## Benchmark plots
 
+### Animated summary
+
+![Animated betting strategy summary](docs/generated/betting-strategy-summary.gif)
+
+### Static figures
+
 ![Profitability by betting policy](docs/generated/betting-profitability.png)
 
 ![Complexity versus profitability](docs/generated/complexity-vs-profitability.png)
+
+See the [figure gallery](docs/generated/README.md) for SVG sources, downloadable data,
+and animation regeneration instructions.
 
 ## Development
 
