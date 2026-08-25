@@ -20,6 +20,8 @@ jobs:
           python-version: ${{ matrix.python-version }}
       - run: python -m pip install --no-deps -e .
       - run: python -m unittest discover -s tests -v
+      - run: flag-play card "1445 | CI Smoke Test" --output results/play-card.svg
+      - run: flag-play sheet examples/playbook.json --output results/play-sheet.svg
       - run: >-
           blackjack-sim --rounds 1000
           --csv results/smoke.csv

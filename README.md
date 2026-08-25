@@ -1,98 +1,82 @@
-# Blackjack Strategy Simulator
+# Flag Football Playbook
 
-A reproducible Monte Carlo simulator for comparing blackjack strategies by payout,
-risk, and operational complexity.
-
-The simulator currently includes three playing baselines:
-
-1. Random legal play
-2. Dealer-mimic play (hit below 17)
-3. Multi-deck basic strategy
-
-It independently compares flat betting, Martingale, Paroli, a Hi-Lo true-count spread,
-and an approximate Hi-Lo half-Kelly policy. Keeping playing strategy separate from
-betting prevents aggressive wagers from being mistaken for better play.
+A small, dependency-free Python library for turning 5v5 flag-football route
+descriptions into play diagrams and printable wrist-bracelet cards.
 
 ## Quick start
 
-Python 3.11 or newer is required. The simulation itself has no third-party runtime
-dependencies.
+Python 3.11 or newer is required.
 
 ```bash
 python -m pip install -e .
-blackjack-sim --strategy basic --betting all --rounds 100000 \
-  --csv results/betting.csv \
-  --scatter results/complexity-vs-profitability.svg \
-  --bar-plot results/betting-profitability.svg
+flag-play card "1445 | Four Strong | spread | Read the slant first" \
+  --output results/four-strong.svg
+flag-play sheet examples/playbook.json --output results/bracelet-sheet.svg
 ```
 
-Without installation:
+Open the generated SVG in a browser and print it at 100% scale. A card is 2.25 by
+3.5 inches; a US Letter sheet contains up to nine cut-out cards.
+
+## Play language
+
+The first four digits list receiver routes from left to right. In `1445`,
+receiver 1 runs route 1, receivers 2 and 3 run route 4, and receiver 4 runs
+route 5.
 
 ```bash
-PYTHONPATH=src python -m blackjack_sim --rounds 100000
+1445
+1-4-4-5
+1445 | Four Strong
+1445 | Four Strong | spread
+1445 | Four Strong | spread | Read the slant, then the curls
 ```
 
-Every command prints a JSON summary. Optional CSV and SVG outputs require no
-visualization package.
+The optional sections are `NAME | FORMATION | NOTES`. Available formations are
+`spread`, `bunch-left`, `bunch-right`, `trips-left`, and `trips-right`.
 
-## Default model
+The default route tree is:
 
-- Six decks
-- 75% penetration
-- Dealer stands on soft 17
-- Blackjack pays 3:2
-- Double after split
-- Up to four split hands
-- No surrender or insurance
-- Basic playing strategy
-- All betting policies, with a 1-12 unit table spread
-- 1,000-unit starting bankroll
+| Number | Route | Number | Route |
+|---:|---|---:|---|
+| 0 | Hitch | 5 | Comeback |
+| 1 | Slant | 6 | Corner |
+| 2 | Out | 7 | Post |
+| 3 | Dig | 8 | Go |
+| 4 | Curl | 9 | Wheel |
 
-Rules and bankroll limits can be changed through command-line flags. Results report
-net units per 100 resolved player hands, return on money wagered, bankroll return,
-round-level standard deviation, maximum drawdown, ruin, and 95% confidence intervals.
+Route numbering is not universal. Applications can pass a custom mapping of
+`Route` objects to the renderer while keeping the same four-digit language.
 
-See the [betting strategy comparison](docs/betting-strategies.md) for reproducible
-two-million-round results and generated plots.
+## Build a play library
 
-## Benchmark plots
+```bash
+flag-play add my-playbook.json \
+  "1445 | Four Strong | spread | Read the slant first" --tag base
+flag-play add my-playbook.json \
+  "8238 | Clear Out | trips-left | Hit the dig" --tag third-down
+flag-play list my-playbook.json
+flag-play sheet my-playbook.json --output results/sheet.svg
+flag-play routes
+```
 
-### Animated summary
+JSON playbooks are intentionally simple and portable. See
+[`examples/playbook.json`](examples/playbook.json).
 
-![Animated betting strategy summary](docs/generated/betting-strategy-summary.gif)
+## Python API
 
-### Static figures
+```python
+from flag_playbook import PlayLibrary, parse_play, write_card, write_sheet
 
-![Profitability by betting policy](docs/generated/betting-profitability.png)
+play = parse_play("1445 | Four Strong | spread")
+write_card(play, "results/four-strong.svg")
 
-![Complexity versus profitability](docs/generated/complexity-vs-profitability.png)
-
-See the [figure gallery](docs/generated/README.md) for SVG sources, downloadable data,
-and animation regeneration instructions.
+playbook = PlayLibrary([play, parse_play("8238 | Clear Out | trips-left")])
+playbook.save("my-playbook.json")
+write_sheet(list(playbook), "results/bracelet-sheet.svg")
+```
 
 ## Development
 
 ```bash
 PYTHONPATH=src python -m unittest discover -s tests -v
 ```
-
-The simulation is seeded. Repeating an experiment with the same version, rules,
-strategy, round count, and seed produces the same result.
-
-See [the validation notes](docs/validation.md) for test coverage and the reproducible
-one-million-round basic-strategy baseline.
-
-## Roadmap
-
-- Add Illustrious 18 and Fab 4 playing deviations
-- Compare KO, Omega II, and Wong Halves
-- Model Wonging and table limits
-- Add replicated experiments and formal risk-of-ruin estimates
-- Replace the initial scalar complexity placeholder with documented memory,
-  arithmetic, decision, and operational dimensions
-- Add exact-composition play as a theoretical upper-bound benchmark
-
-## Responsible use
-
-This project is for simulation and statistical research. Casino rules and laws vary,
-and short-run outcomes can differ substantially from expected value.

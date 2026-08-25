@@ -3,16 +3,17 @@ requires = ["setuptools>=68"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "blackjack-strategy-simulator"
+name = "flag-football-playbook"
 version = "0.1.0"
-description = "Reproducible blackjack strategy and card-counting simulator"
+description = "Describe 5v5 flag-football plays and print wrist-bracelet cards"
 readme = "README.md"
 requires-python = ">=3.11"
 license = { text = "MIT" }
-authors = [{ name = "Blackjack Simulator Contributors" }]
+authors = [{ name = "Flag Playbook Contributors" }]
 dependencies = []
 
 [project.scripts]
+flag-play = "flag_playbook.cli:main"
 blackjack-sim = "blackjack_sim.cli:main"
 
 [tool.setuptools.packages.find]
