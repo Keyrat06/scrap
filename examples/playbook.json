@@ -1,0 +1,26 @@
+{
+  "version": 1,
+  "plays": [
+    {
+      "code": "1445",
+      "name": "Four Strong",
+      "formation": "spread",
+      "notes": "Read the slant, then curls",
+      "tags": ["base"]
+    },
+    {
+      "code": "8238",
+      "name": "Clear Out",
+      "formation": "trips-left",
+      "notes": "Hit the dig under the go routes",
+      "tags": ["third-down"]
+    },
+    {
+      "code": "1276",
+      "name": "Cross Country",
+      "formation": "bunch-right",
+      "notes": "Read left to right",
+      "tags": ["man"]
+    }
+  ]
+}
